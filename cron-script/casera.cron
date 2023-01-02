@@ -1,0 +1,1 @@
+console.log('[INFO] Cron \'Casera\' Standby Mode -- ' + new Date().toLocaleString());

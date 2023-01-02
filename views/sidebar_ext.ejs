@@ -1,0 +1,375 @@
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/index">
+        <div class="sidebar-brand-icon">
+            <i class="fas fa-user-circle"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3"><%= webTitle %></div>
+    </a>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item active">
+        <a class="nav-link" href="/index">
+            <i class="fas fa-fw fa-home"></i>
+            <span>Home</span></a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Status (Last Change: <span id="WORK_E"></span>)
+    </div>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePortal"
+            aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-user-circle"></i>
+            <span><% if(status == null){ %>NOT LOGIN<% }else{ %><%= status %><% } %></span>
+        </a>
+        <div id="collapsePortal" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <% if(status == "AVAILABLE") { %>
+                <% if(status == "MEETING") { %><% }else{ %> <a class="collapse-item" href="/meeting">Meeting</a> <% } %>
+                <% if(status == "TRAINING") { %><% }else{ %> <a class="collapse-item" href="/training">Training</a> <% } %>
+                <% if(status == "COACHING") { %><% }else{ %> <a class="collapse-item" href="/coaching">Coaching</a> <% } %>
+                <% if(status == "BREAK") { %><% }else{ %> <a class="collapse-item" href="/break">Break</a> <% } %>
+                <% if(status == "LUNCH") { %><% }else{ %> <a class="collapse-item" href="/lunch">Lunch</a> <% } %>
+                <% if(status == "OTHER") { %><% }else{ %> <a class="collapse-item" href="/other">Other</a> <% } %>
+                <% if(status == "NOT LOGIN") { %><% }else{ %> <a class="collapse-item" href="/logout">Logout</a> <% } %>
+                <% }else{ %> <a class="collapse-item" href="/avail">Available</a> <% } %>
+            </div>
+        </div>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Employee
+    </div>
+
+    <!-- Nav Item - Charts -->
+    <li class="nav-item">
+        <a class="nav-link" href="/account">
+            <i class="fas fa-fw fa-info"></i>
+            <span>Information</span></a>
+    </li>
+
+    <!-- Nav Item - Charts -->
+    <li class="nav-item">
+        <a class="nav-link" href="/team">
+            <i class="fas fa-fw fa-users"></i>
+            <span>Team</span></a>
+    </li>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCalendar"
+            aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-calendar"></i>
+            <span>Calendar</span>
+        </a>
+        <div id="collapseCalendar" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Actions:</h6>
+                <a class="collapse-item" href="#">ToDo</a>
+                <a class="collapse-item" href="#">Schedule</a>
+                <a class="collapse-item" href="#">Request Leave</a>
+                <a class="collapse-item" href="#">Request Swap</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Nav Item - Tables -->
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            <i class="fas fa-fw fa-dollar-sign"></i>
+            <span>Payslip</span></a>
+    </li>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseStorage"
+            aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-file-alt"></i>
+            <span>File Storage</span>
+        </a>
+        <div id="collapseStorage" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Type:</h6>
+                <a class="collapse-item" href="#">Public</a>
+                <a class="collapse-item" href="#">Private</a>
+            </div>
+        </div>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTools"
+            aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-wrench"></i>
+            <span>Other Tools</span>
+        </a>
+        <div id="collapseTools" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Tools:</h6>
+                <a class="collapse-item" href="#">Calculator</a>
+                <a class="collapse-item" href="#">Notepad</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <% if(position == 'Manager' || position == 'Developer'){ %>
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Manager
+    </div>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseManSched"
+            aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-calendar-alt"></i>
+            <span>Schedule Tools</span>
+        </a>
+        <div id="collapseManSched" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Tools:</h6>
+                <a class="collapse-item" href="#">Time Adjustment</a>
+                <a class="collapse-item" href="#">RDOT/OT Manager</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseManMan"
+            aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-users-cog"></i>
+            <span>Team Tools</span>
+        </a>
+        <div id="collapseManMan" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Tools:</h6>
+                <a class="collapse-item" href="#">Team Manager</a>
+                <a class="collapse-item" href="#">Coaching/Observation</a>
+                <a class="collapse-item" href="#">Doc Templates</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+    <% } %>
+
+    <% if(position == 'Developer'){ %>
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Developer
+    </div>
+
+    <li class="nav-item">
+        <a class="nav-link" href="/switch">
+            <i class="fas fa-fw fa-microchip"></i>
+            <span>Super Switch</span></a>
+    </li>
+    
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDevTool"
+            aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-code"></i>
+            <span>Developer Tools</span>
+        </a>
+        <div id="collapseDevTool" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Tools:</h6>
+                <a class="collapse-item" href="/user-manager">User Management</a>
+                <a class="collapse-item" href="/file-manager">File Management</a>
+                <a class="collapse-item" href="#">Test API</a>
+                <a class="collapse-item" href="#">Bugs/Reports</a>
+                <a class="collapse-item" href="#">ToDo</a>
+                <a class="collapse-item" href="#">Manual</a>
+                <a class="collapse-item" href="#">Version Control</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTerminal"
+            aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-terminal"></i>
+            <span>Terminal</span>
+        </a>
+        <div id="collapseTerminal" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Tools:</h6>
+                <a class="collapse-item" href="#">SSH</a>
+                <a class="collapse-item" href="#">1-Session</a>
+                <a class="collapse-item" href="#">MySQL</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDatabase"
+            aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-database"></i>
+            <span>Database / SQL</span>
+        </a>
+        <div id="collapseDatabase" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">UI:</h6>
+                <a class="collapse-item" href="#">GUI</a>
+                <a class="collapse-item" href="#">CLI</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCron"
+            aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-briefcase"></i>
+            <span>Cron Job</span>
+        </a>
+        <div id="collapseCron" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Task:</h6>
+                <a class="collapse-item" href="#">Akashi</a>
+                <a class="collapse-item" href="#">Delta</a>
+                <a class="collapse-item" href="#">Casera</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Interface
+    </div>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+            aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>Components</span>
+        </a>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Custom Components:</h6>
+                <a class="collapse-item" href="#">Buttons</a>
+                <a class="collapse-item" href="#">Cards</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Nav Item - Utilities Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+            aria-expanded="true" aria-controls="collapseUtilities">
+            <i class="fas fa-fw fa-wrench"></i>
+            <span>Utilities</span>
+        </a>
+        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+            data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Custom Utilities:</h6>
+                <a class="collapse-item" href="utilities-color.html">Colors</a>
+                <a class="collapse-item" href="utilities-border.html">Borders</a>
+                <a class="collapse-item" href="utilities-animation.html">Animations</a>
+                <a class="collapse-item" href="utilities-other.html">Other</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Addons
+    </div>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
+            aria-expanded="true" aria-controls="collapsePages">
+            <i class="fas fa-fw fa-folder"></i>
+            <span>Pages</span>
+        </a>
+        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Login Screens:</h6>
+                <a class="collapse-item" href="login.html">Login</a>
+                <a class="collapse-item" href="register.html">Register</a>
+                <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
+                <div class="collapse-divider"></div>
+                <h6 class="collapse-header">Other Pages:</h6>
+                <a class="collapse-item" href="404.html">404 Page</a>
+                <a class="collapse-item" href="blank.html">Blank Page</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Nav Item - Charts -->
+    <li class="nav-item">
+        <a class="nav-link" href="charts.html">
+            <i class="fas fa-fw fa-chart-area"></i>
+            <span>Charts</span></a>
+    </li>
+
+    <!-- Nav Item - Tables -->
+    <li class="nav-item">
+        <a class="nav-link" href="tables.html">
+            <i class="fas fa-fw fa-table"></i>
+            <span>Tables</span></a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+
+    <% } %>
+
+    <!-- Sidebar Toggler (Sidebar) -->
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
+
+</ul>
+
+<script>
+    function toHHMMSS(secs) {
+        var sec_num = parseInt(secs, 10)
+        var hours = Math.floor(sec_num / 3600)
+        var minutes = Math.floor(sec_num / 60) % 60
+        var seconds = sec_num % 60
+
+        return [hours, minutes, seconds]
+            .map(v => v < 10 ? "0" + v : v)
+            .filter((v, i) => v !== "00" || i > 0)
+            .join(":")
+    }
+    function getWorkingTime() {
+        var startDate = new Date("<%- statuslastchange %>");
+        var currentDate = new Date();
+        var WorkingSeconds = (currentDate.getTime() - startDate.getTime()) / 1000;
+        document.getElementById('WORK_E').innerHTML = toHHMMSS(WorkingSeconds);
+        var t = setTimeout(getWorkingTime, 500);
+    }
+</script>

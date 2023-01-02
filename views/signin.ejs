@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style-login.css">
+    <title>Signin</title>
+</head>
+<body>
+    <main class="main">
+        <div class="container">
+            <section class="wrapper">
+                <div class="heading">
+                    <h1 class="text text-large">Sign In</h1>
+                    <p class="text text-normal">New user? <span><a href="#" class="text text-links">Request an account</a></span>
+                    </p>
+                </div>
+                <form name="signin" action="/auth-form" method="POST" class="form">
+                    <script> var url = new URL(window.location.href); var code = url.searchParams.get("err"); if(code == "403"){ document.write('<p style="color:red;">Incorrect Email or Password</p>') } </script>
+                    <script> var url = new URL(window.location.href); var code = url.searchParams.get("maintenance"); if(code == "true"){ document.write('<p style="color:red;">Portal is currently under maintenance</p>') } </script>
+                    <div class="input-control">
+                        <label for="email" class="input-label" hidden>Email Address</label>
+                        <input type="email" name="email" id="email" class="input-field" placeholder="Email Address" required>
+                    </div>
+                    <div class="input-control">
+                        <label for="password" class="input-label" hidden>Password</label>
+                        <input type="password" name="password" id="password" class="input-field" placeholder="Password" required>
+                    </div>
+                    <div class="input-control">
+                        <a href="/forgot-password" class="text text-links">Forgot Password</a>
+                        <input type="submit" name="submit" class="input-submit" value="Sign In">
+                    </div>
+                </form>
+                <div class="striped">
+                    <span class="striped-line"></span>
+                    <span class="striped-text">Or</span>
+                    <span class="striped-line"></span>
+                </div>
+                <div class="method">
+                    <div class="method-control">
+                        <a href="/auth-ms" class="method-action">
+                            <i class="ion ion-logo-google"></i>
+                            <span>Sign in with Test MS</span>
+                        </a>
+                    </div>
+                    <div class="method-control">
+                        <a href="#" class="method-action">
+                            <i class="ion ion-logo-facebook"></i>
+                            <span>Sign in with Facebook</span>
+                        </a>
+                    </div>
+                    <div class="method-control">
+                        <a href="#" class="method-action">
+                            <i class="ion ion-logo-apple"></i>
+                            <span>Sign in with Apple</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+</body>
+</html>
