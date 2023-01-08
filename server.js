@@ -16,6 +16,7 @@ const weather = require('openweather-apis');
 const cron = require('node-cron');
 const { exec } = require("child_process");
 const { Configuration, OpenAIApi } = require("openai");
+const MemoryStore = require('memorystore')(sessions)
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -57,6 +58,9 @@ const sessionConfig = {
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    store: new MemoryStore({
+        checkPeriod: 86400000 // prune expired entries every 24h
+    }),
     cookie: {
         maxAge: oneDay, 
         secure: true,
