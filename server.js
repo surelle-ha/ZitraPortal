@@ -13,8 +13,27 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require('body-parser');
 const uuid = require('node-uuid');
 const weather = require('openweather-apis');
-var cron = require('node-cron');
+const cron = require('node-cron');
 const { exec } = require("child_process");
+const { Configuration, OpenAIApi } = require("openai");
+
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
+
+async function DavinciAI(query) {
+    const completion = await openai.createCompletion({
+        model: "text-davinci-003",
+        prompt: query,
+        temperature: 0,
+        max_tokens: 4000,
+    });
+    fs.writeFile('one.txt', completion.data.choices[0].text, err => {
+        if (err) { console.error(err); }
+    });
+    return fs.readFileSync('one.txt', 'utf8');
+};  
 
 // << # Simulate SSL Cert >>
 const options = {
@@ -122,6 +141,7 @@ app.post('/auth-form', (req, res) => {
                             req.session.department = result[0].Department;
                             req.session.position = result[0].Role;
                             req.session.worksetup = result[0].CurrentWorkSetup;
+                            req.session.manager = result[0].ReportsTo;
                             userSignin(req.session.userid, req.session.username);
                             res.redirect('/index');
                         }else{ res.redirect('/signin?err=403'); } // Add Frontend Design
@@ -153,6 +173,7 @@ app.get('/index', (req, res) => {
         if(req.session.username == null){
             res.redirect('/');
         }else{
+            //DavinciAI('Tell me about Jose Rizal.');
             sql_connection.connect(function (err) {
                 if(err){ } else {
 
@@ -220,22 +241,31 @@ app.get('/account', function(req, res) {
     }
 });
 
+// ## TEAM FUNCTIONS ## ********************************************************** //
+
 app.get('/team', function(req,res) {
     try {
         if(req.session.username == null){
             res.redirect('/');
         }else{
-            res.render('account', { 
-                locWeather: $weatherTemp,
-                locWeatherLong: $weatherDetails,
-                webTitle: process.env.WEB_TITLE, 
-                webAuthor: process.env.WEB_AUTHOR, 
-                status: req.session.status, 
-                statuslastchange: req.session.statuslastchange,
-                username: req.session.username,
-                department: req.session.department,
-                position: req.session.position,
-                worksetup: req.session.worksetup
+            sql_connection.connect(function (err) {
+                if(err){ } else {
+                    var query = "SELECT * FROM EmployeeTB WHERE ReportsTo = '" + req.session.manager + "' OR ID = '" + req.session.manager + "'";
+                    sql_connection.query(query, function (err, result, fields) {
+                        if (err) { console.log(err); } else {
+                            res.render('team', { 
+                                webTitle: process.env.WEB_TITLE, 
+                                webAuthor: process.env.WEB_AUTHOR, 
+                                status: req.session.status, 
+                                statuslastchange: req.session.statuslastchange,
+                                username: req.session.username,
+                                position: req.session.position,
+                                manager: req.session.manager,
+                                all_user: result
+                            });
+                        }
+                    });
+                }
             });
         }
     } catch (e) {
@@ -243,6 +273,41 @@ app.get('/team', function(req,res) {
         res.redirect('/');
     }
 });
+
+// ## TIME TRACK FUNCTIONS ## ********************************************************** //
+
+app.get('/timetrack', function(req, res) {
+    try {
+        if(req.session.username == null){
+            res.redirect('/');
+        }else{
+            sql_connection.connect(function (err) {
+                if(err){ } else {
+                    var query = "SELECT * FROM WorkTrackTB WHERE User_ID = '" + req.session.userid + "' ORDER BY Update_ID DESC";
+                    sql_connection.query(query, function (err, result, fields) {
+                        if (err) { console.log(err); } else {
+                            res.render('timetrack', { 
+                                webTitle: process.env.WEB_TITLE, 
+                                webAuthor: process.env.WEB_AUTHOR, 
+                                status: req.session.status, 
+                                statuslastchange: req.session.statuslastchange,
+                                username: req.session.username,
+                                position: req.session.position,
+                                manager: req.session.manager,
+                                timetracks: result
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    } catch (e) {
+        //if (e instanceof ReferenceError) { res.redirect('/'); }
+        res.redirect('/');
+    }
+});
+
+// ## SWITCH FUNCTIONS ## ********************************************************** //
 
 app.get('/switch', function(req, res) { // For admin only
     try {
@@ -363,6 +428,8 @@ app.get('/show-score', function(req, res) {
     }
 });
 
+// ## USERMAN FUNCTIONS ## ********************************************************** //
+
 app.get('/user-manager', function(req, res){
     try {
         if(req.session.username == null || req.session.position != 'Developer'){
@@ -385,6 +452,66 @@ app.get('/user-manager', function(req, res){
                         }
                     });
                 }
+            });
+        }
+    } catch (e) {
+        //if (e instanceof ReferenceError) { res.redirect('/'); }
+        res.redirect('/');
+    }
+});
+
+// ## AI HELPER FUNCTIONS ## ********************************************************** //
+
+/* NOT WORKING
+app.get('/aihelp', function(req, res) {
+    try {
+        if(req.session.username == null || req.session.position != 'Developer'){
+            res.redirect('/');
+        }else{
+            sql_connection.connect(function (err) {
+                if(err){ } else {
+                    var query = "SELECT * FROM EmployeeTB";
+                    sql_connection.query(query, function (err, result, fields) {
+                        if (err) { console.log(err); } else {
+                            if(req.query.q != null){
+                                var aiRes = req.query.q;
+                                DavinciAI(aiRes);
+                            }
+                            res.render('aihelp', { 
+                                webTitle: process.env.WEB_TITLE, 
+                                webAuthor: process.env.WEB_AUTHOR, 
+                                status: req.session.status, 
+                                statuslastchange: req.session.statuslastchange,
+                                username: req.session.username,
+                                position: req.session.position
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    } catch (e) {
+        //if (e instanceof ReferenceError) { res.redirect('/'); }
+        console.log(e);
+        res.redirect('/');
+    }
+});
+*/
+
+// ## USERMAN FUNCTIONS ## ********************************************************** //
+
+app.get('/dbmyadmin', function(req, res) {
+    try {
+        if(req.session.username == null || req.session.position != 'Developer'){
+            res.redirect('/');
+        }else{
+            res.render('dbmyadmin', { 
+                webTitle: process.env.WEB_TITLE, 
+                webAuthor: process.env.WEB_AUTHOR, 
+                status: req.session.status, 
+                statuslastchange: req.session.statuslastchange,
+                username: req.session.username,
+                position: req.session.position
             });
         }
     } catch (e) {
@@ -432,3 +559,33 @@ https.createServer(options, app).listen(process.env.SERVER_PORT, function (req, 
 
 // << # cron.js - task scheduler >> 
 eval(fs.readFileSync('cron.js')+'');
+
+
+/*
+<thead>
+                                        <tr>
+                                            <th>Update ID</th>
+                                            <th>Date</th>
+                                            <th>Time</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Update ID</th>
+                                            <th>Date</th>
+                                            <th>Time</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody>
+                                        <% timetracks.forEach(entry => { %>
+                                        <tr>
+                                            <td><%= entry.Update_ID %></td>
+                                            <td><%= entry.EvDate %></td>
+                                            <td><%= entry.EvTime %></td>
+                                            <td><%= entry.EvStatus %></td>
+                                        </tr>
+                                        <% }) %>
+                                    </tbody>
+*/
