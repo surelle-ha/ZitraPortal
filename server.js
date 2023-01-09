@@ -19,7 +19,6 @@ const cron = require('node-cron');
 const { Configuration, OpenAIApi } = require("openai");
 const MemoryStore = require('memorystore')(sessions)
 
-/*
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -37,7 +36,6 @@ async function DavinciAI(query) {
     });
     return fs.readFileSync('one.txt', 'utf8');
 };  
-*/
 
 // << # Simulate SSL Cert >>
 const options = {
@@ -555,18 +553,20 @@ app.get('*', function(req, res){
 });
 
 // << ## MAIN >>
-/*
+
 https.createServer(options, app).listen(process.env.SERVER_PORT, function (req, res) {
     console.clear();
     console.log('Zitra [Build ' + process.env.WEB_VERSION + '] (c) Harold Eustaquio. All rights reserved.');
     console.log(`[INFO] ` + process.env.WEB_TITLE + ` is Listening on Port ` + process.env.SERVER_PORT);
 });    
-*/
-http.createServer(options, app).listen(process.env.SERVER_PORT, function (req, res) {
+
+/*
+http.createServer(app).listen(process.env.SERVER_PORT, function (req, res) {
     console.clear();
     console.log('Zitra [Build ' + process.env.WEB_VERSION + '] (c) Harold Eustaquio. All rights reserved.');
     console.log(`[INFO] ` + process.env.WEB_TITLE + ` is Listening on Port ` + process.env.SERVER_PORT);
 });   
+*/
 
 // << # cron.js - task scheduler >> 
 eval(fs.readFileSync('cron.js')+'');
