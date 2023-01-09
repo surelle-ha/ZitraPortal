@@ -6,6 +6,7 @@
 
 require('dotenv').config();
 const https = require('https');
+const http = require('http');
 const mysql = require('mysql2');
 const fs = require("fs");
 const express = require('express');
@@ -102,9 +103,6 @@ weather.setUnits(process.env.OPENWEATHER_DFLT_UNIT);
 weather.setAPPID(process.env.OPENWEATHER_API_KEY);
 
 // << # Functions >>
-const roleValidate = (userID, constPosition) => {
-    
-}
 const userSignin = (userID, userName) => console.log('[ ' + new Date().toLocaleString() + ' ] [ ' + userID + ' ] ' + userName.toUpperCase() + ' LOGGED IN');
 const userSignout = (userID, userName) => console.log('[ ' + new Date().toLocaleString() + ' ] [ ' + userID + ' ] ' + userName.toUpperCase() + ' LOGGED OUT');
 const auxChange = (userID, userName, auxTo) => console.log('[ ' + new Date().toLocaleString() + ' ] [ ' + userID + ' ] ' + userName.toUpperCase() + ' CHANGED STATUS TO ' + auxTo);
@@ -557,11 +555,18 @@ app.get('*', function(req, res){
 });
 
 // << ## MAIN >>
+/*
 https.createServer(options, app).listen(process.env.SERVER_PORT, function (req, res) {
     console.clear();
     console.log('Zitra [Build ' + process.env.WEB_VERSION + '] (c) Harold Eustaquio. All rights reserved.');
     console.log(`[INFO] ` + process.env.WEB_TITLE + ` is Listening on Port ` + process.env.SERVER_PORT);
 });    
+*/
+http.createServer(options, app).listen(process.env.SERVER_PORT, function (req, res) {
+    console.clear();
+    console.log('Zitra [Build ' + process.env.WEB_VERSION + '] (c) Harold Eustaquio. All rights reserved.');
+    console.log(`[INFO] ` + process.env.WEB_TITLE + ` is Listening on Port ` + process.env.SERVER_PORT);
+});   
 
 // << # cron.js - task scheduler >> 
 eval(fs.readFileSync('cron.js')+'');
