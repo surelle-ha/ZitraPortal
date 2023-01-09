@@ -14,7 +14,6 @@ const bodyParser = require('body-parser');
 const uuid = require('node-uuid');
 const weather = require('openweather-apis');
 const cron = require('node-cron');
-const { exec } = require("child_process");
 const { Configuration, OpenAIApi } = require("openai");
 const MemoryStore = require('memorystore')(sessions)
 
