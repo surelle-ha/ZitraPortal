@@ -763,14 +763,3 @@ https.createServer(options, app).listen(process.env.SERVER_PORT, function (req, 
 
 // << # cron.js - task scheduler >> 
 // eval(fs.readFileSync('cron.js')+'');
-cron.schedule('* * * * *', () => {
-    eval(fs.readFileSync('cron-script/akashi.cron')+'');
-});
-
-cron.schedule('* * * * *', () => {
-    eval(fs.readFileSync('cron-script/delta.cron')+'');
-});
-
-cron.schedule('* * * * *', () => {
-    eval(fs.readFileSync('cron-script/casera.cron')+'');
-});
