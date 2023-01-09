@@ -18,6 +18,7 @@ const cron = require('node-cron');
 const { Configuration, OpenAIApi } = require("openai");
 const MemoryStore = require('memorystore')(sessions)
 
+/*
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -35,6 +36,7 @@ async function DavinciAI(query) {
     });
     return fs.readFileSync('one.txt', 'utf8');
 };  
+*/
 
 // << # Simulate SSL Cert >>
 const options = {
