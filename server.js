@@ -561,34 +561,4 @@ https.createServer(options, app).listen(process.env.SERVER_PORT, function (req, 
 });    
 
 // << # cron.js - task scheduler >> 
-eval(fs.readFileSync('cron.js')+'');
-
-
-/*
-<thead>
-                                        <tr>
-                                            <th>Update ID</th>
-                                            <th>Date</th>
-                                            <th>Time</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tfoot>
-                                        <tr>
-                                            <th>Update ID</th>
-                                            <th>Date</th>
-                                            <th>Time</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </tfoot>
-                                    <tbody>
-                                        <% timetracks.forEach(entry => { %>
-                                        <tr>
-                                            <td><%= entry.Update_ID %></td>
-                                            <td><%= entry.EvDate %></td>
-                                            <td><%= entry.EvTime %></td>
-                                            <td><%= entry.EvStatus %></td>
-                                        </tr>
-                                        <% }) %>
-                                    </tbody>
-*/
+// eval(fs.readFileSync('cron.js')+'');
