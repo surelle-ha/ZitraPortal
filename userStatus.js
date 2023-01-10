@@ -9,7 +9,7 @@ app.get('/avail', function(req, res) {
         req.session.status = userWorkStatus.AVAIL;
         var query = "UPDATE EmployeeTB SET CurrentWorkStatus = '" + req.session.status + "' WHERE ID = " + req.session.userid;
         sql_connection.query(query, function (err, result){});
-        var query = "INSERT INTO WorkTrackTB(User_ID, EvDate, EvTime, EvStatus) VALUES(" + req.session.userid + ", '" + new Date().toLocaleDateString() + "', '" + new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) + "', '" + req.session.status + "')";
+        var query = "INSERT INTO WorkTrackTB(User_ID, EvDate, EvTime, EvStatus) VALUES(" + req.session.userid + ", '" + new Date().toLocaleDateString() + "', '" + new Date().toLocaleString({ hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) + "', '" + req.session.status + "')";
         sql_connection.query(query, function (err, result){});
         auxChange(req.session.userid, req.session.username, req.session.status);
         res.redirect('/index');
@@ -28,7 +28,7 @@ app.get('/meeting', function(req, res) {
             req.session.status = userWorkStatus.MEETING; 
             var query = "UPDATE EmployeeTB SET CurrentWorkStatus = '" + req.session.status + "' WHERE ID = " + req.session.userid;
             sql_connection.query(query, function (err, result){});
-            var query = "INSERT INTO WorkTrackTB(User_ID, EvDate, EvTime, EvStatus) VALUES(" + req.session.userid + ", '" + new Date().toLocaleDateString() + "', '" + new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) + "', '" + req.session.status + "')";
+            var query = "INSERT INTO WorkTrackTB(User_ID, EvDate, EvTime, EvStatus) VALUES(" + req.session.userid + ", '" + new Date().toLocaleDateString() + "', '" + new Date().toLocaleString({ hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) + "', '" + req.session.status + "')";
         sql_connection.query(query, function (err, result){});
             auxChange(req.session.userid, req.session.username, req.session.status);
             res.redirect('/index');
@@ -54,7 +54,7 @@ app.get('/training', function(req, res) {
             req.session.status = userWorkStatus.TRAINING; 
             var query = "UPDATE EmployeeTB SET CurrentWorkStatus = '" + req.session.status + "' WHERE ID = " + req.session.userid;
             sql_connection.query(query, function (err, result){});
-            var query = "INSERT INTO WorkTrackTB(User_ID, EvDate, EvTime, EvStatus) VALUES(" + req.session.userid + ", '" + new Date().toLocaleDateString() + "', '" + new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) + "', '" + req.session.status + "')";
+            var query = "INSERT INTO WorkTrackTB(User_ID, EvDate, EvTime, EvStatus) VALUES(" + req.session.userid + ", '" + new Date().toLocaleDateString() + "', '" + new Date().toLocaleString({ hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) + "', '" + req.session.status + "')";
             sql_connection.query(query, function (err, result){});
             auxChange(req.session.userid, req.session.username, req.session.status);
             res.redirect('/index');
@@ -80,7 +80,7 @@ app.get('/coaching', function(req, res) {
             req.session.status = userWorkStatus.COACHING; 
             var query = "UPDATE EmployeeTB SET CurrentWorkStatus = '" + req.session.status + "' WHERE ID = " + req.session.userid;
             sql_connection.query(query, function (err, result){});
-            var query = "INSERT INTO WorkTrackTB(User_ID, EvDate, EvTime, EvStatus) VALUES(" + req.session.userid + ", '" + new Date().toLocaleDateString() + "', '" + new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) + "', '" + req.session.status + "')";
+            var query = "INSERT INTO WorkTrackTB(User_ID, EvDate, EvTime, EvStatus) VALUES(" + req.session.userid + ", '" + new Date().toLocaleDateString() + "', '" + new Date().toLocaleString({ hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) + "', '" + req.session.status + "')";
             sql_connection.query(query, function (err, result){});
             auxChange(req.session.userid, req.session.username, req.session.status);
             res.redirect('/index');
@@ -106,7 +106,7 @@ app.get('/other', function(req, res) {
             req.session.status = userWorkStatus.OTHER; 
             var query = "UPDATE EmployeeTB SET CurrentWorkStatus = '" + req.session.status + "' WHERE ID = " + req.session.userid;
             sql_connection.query(query, function (err, result){});
-            var query = "INSERT INTO WorkTrackTB(User_ID, EvDate, EvTime, EvStatus) VALUES(" + req.session.userid + ", '" + new Date().toLocaleDateString() + "', '" + new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) + "', '" + req.session.status + "')";
+            var query = "INSERT INTO WorkTrackTB(User_ID, EvDate, EvTime, EvStatus) VALUES(" + req.session.userid + ", '" + new Date().toLocaleDateString() + "', '" + new Date().toLocaleString({ hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) + "', '" + req.session.status + "')";
             sql_connection.query(query, function (err, result){});
             auxChange(req.session.userid, req.session.username, req.session.status);
             res.redirect('/index');
@@ -132,7 +132,7 @@ app.get('/break', function(req, res) {
             req.session.status = userWorkStatus.BREAK; 
             var query = "UPDATE EmployeeTB SET CurrentWorkStatus = '" + req.session.status + "' WHERE ID = " + req.session.userid;
             sql_connection.query(query, function (err, result){});
-            var query = "INSERT INTO WorkTrackTB(User_ID, EvDate, EvTime, EvStatus) VALUES(" + req.session.userid + ", '" + new Date().toLocaleDateString() + "', '" + new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) + "', '" + req.session.status + "')";
+            var query = "INSERT INTO WorkTrackTB(User_ID, EvDate, EvTime, EvStatus) VALUES(" + req.session.userid + ", '" + new Date().toLocaleDateString() + "', '" + new Date().toLocaleString({ hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) + "', '" + req.session.status + "')";
             sql_connection.query(query, function (err, result){});
             auxChange(req.session.userid, req.session.username, req.session.status);
             res.redirect('/index');
@@ -158,7 +158,7 @@ app.get('/lunch', function(req, res) {
             req.session.status = userWorkStatus.LUNCH; 
             var query = "UPDATE EmployeeTB SET CurrentWorkStatus = '" + req.session.status + "' WHERE ID = " + req.session.userid;
             sql_connection.query(query, function (err, result){});
-            var query = "INSERT INTO WorkTrackTB(User_ID, EvDate, EvTime, EvStatus) VALUES(" + req.session.userid + ", '" + new Date().toLocaleDateString() + "', '" + new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) + "', '" + req.session.status + "')";
+            var query = "INSERT INTO WorkTrackTB(User_ID, EvDate, EvTime, EvStatus) VALUES(" + req.session.userid + ", '" + new Date().toLocaleDateString() + "', '" + new Date().toLocaleString({ hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) + "', '" + req.session.status + "')";
             sql_connection.query(query, function (err, result){});
             auxChange(req.session.userid, req.session.username, req.session.status);
             res.redirect('/index');
@@ -184,7 +184,7 @@ app.get('/logout', function(req, res) {
             req.session.status = userWorkStatus.NOT_LOGIN; 
             var query = "UPDATE EmployeeTB SET CurrentWorkStatus = '" + req.session.status + "' WHERE ID = " + req.session.userid;
             sql_connection.query(query, function (err, result){});
-            var query = "INSERT INTO WorkTrackTB(User_ID, EvDate, EvTime, EvStatus) VALUES(" + req.session.userid + ", '" + new Date().toLocaleDateString() + "', '" + new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) + "', '" + req.session.status + "')";
+            var query = "INSERT INTO WorkTrackTB(User_ID, EvDate, EvTime, EvStatus) VALUES(" + req.session.userid + ", '" + new Date().toLocaleDateString() + "', '" + new Date().toLocaleString({ hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) + "', '" + req.session.status + "')";
             sql_connection.query(query, function (err, result){});
             auxChange(req.session.userid, req.session.username, req.session.status);
             res.redirect('/index');

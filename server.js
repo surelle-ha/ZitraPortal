@@ -178,7 +178,6 @@ app.get('/forgot-password', function(req, res) {
 });
 
 app.get('/index', (req, res) => {
-    console.log(req.session.username);
     try {
         if(req.session.username == null){
             res.redirect('/');
