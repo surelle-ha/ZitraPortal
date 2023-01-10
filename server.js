@@ -71,7 +71,7 @@ const sessionConfig = {
     }),
     cookie: {
         maxAge: oneDay, 
-        secure: true,
+        secure: false
     }
 }
 
@@ -178,11 +178,11 @@ app.get('/forgot-password', function(req, res) {
 });
 
 app.get('/index', (req, res) => {
+    console.log(req.session.username);
     try {
         if(req.session.username == null){
             res.redirect('/');
         }else{
-            //DavinciAI('Tell me about Jose Rizal.');
             sql_connection.connect(function (err) {
                 if(err){ } else {
 
