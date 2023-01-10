@@ -52,6 +52,13 @@ var sql_connection = mysql.createConnection({
     password: process.env.SQL_PASS
 });
 
+// << # Keep MySQL Connection Alive >>
+try{
+    setInterval(function () {
+        sql_connection.query('SELECT 1');
+    }, 5000);
+}catch(err){}
+
 // << # Configuration for express-session >>
 const oneDay = 1000 * 60 * 60 * 24;
 const sessionConfig = {
@@ -553,20 +560,20 @@ app.get('*', function(req, res){
 });
 
 // << ## MAIN >>
-/*
+
 https.createServer(options, app).listen(process.env.SERVER_PORT, function (req, res) {
     console.clear();
     console.log('Zitra [Build ' + process.env.WEB_VERSION + '] (c) Harold Eustaquio. All rights reserved.');
     console.log(`[INFO] ` + process.env.WEB_TITLE + ` is Listening on Port ` + process.env.SERVER_PORT);
 });    
-*/
 
+/*
 http.createServer(app).listen(process.env.SERVER_PORT, function (req, res) {
     console.clear();
     console.log('Zitra [Build ' + process.env.WEB_VERSION + '] (c) Harold Eustaquio. All rights reserved.');
     console.log(`[INFO] ` + process.env.WEB_TITLE + ` is Listening on Port ` + process.env.SERVER_PORT);
 });   
-
+*/
 
 // << # cron.js - task scheduler >> 
 eval(fs.readFileSync('cron.js')+'');
