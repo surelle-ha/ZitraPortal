@@ -561,7 +561,7 @@ app.get('*', function(req, res){
 
 // << ## MAIN >>
 
-https.createServer(app).listen(process.env.SERVER_PORT, function (req, res) {
+http.createServer(app).listen(process.env.SERVER_PORT, function (req, res) {
     console.clear();
     console.log('Zitra [Build ' + process.env.WEB_VERSION + '] (c) Harold Eustaquio. All rights reserved.');
     console.log(`[INFO] ` + process.env.WEB_TITLE + ` is Listening on Port ` + process.env.SERVER_PORT);
