@@ -18,8 +18,9 @@ const weather = require('openweather-apis');
 const cron = require('node-cron');
 const { Configuration, OpenAIApi } = require("openai");
 const MemoryStore = require('memorystore')(sessions)
-const dns = require('dns');
+const colors = require('colors');
 
+/*
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -37,6 +38,7 @@ async function DavinciAI(query) {
     });
     return fs.readFileSync('one.txt', 'utf8');
 };  
+*/
 
 // << # Simulate SSL Cert >>
 const options = {
@@ -87,8 +89,8 @@ app.set('trust proxy', true);
 
 // << # Test connection for SQL >>
 sql_connection.connect(function (err) {
-    if(err){ console.log('[CTRL] SQL Status: ' + err);
-    }else{ console.log('[INFO] SQL Status: Connected'); }
+    if(err){ console.log('[' + 'CRTL'.red + '] SQL Status: ' + err);
+    }else{ console.log('[' + 'SUCC'.green + '] SQL Status: Connected'); }
 });
 
 // << # Define Keyword >>
@@ -110,17 +112,16 @@ weather.setUnits(process.env.OPENWEATHER_DFLT_UNIT);
 weather.setAPPID(process.env.OPENWEATHER_API_KEY);
 
 // << # Functions >>
-const userSignin = (userID, userName) => console.log('[ ' + new Date().toLocaleString() + ' ] [ ' + userID + ' ] ' + userName.toUpperCase() + ' LOGGED IN');
-const userSignout = (userID, userName) => console.log('[ ' + new Date().toLocaleString() + ' ] [ ' + userID + ' ] ' + userName.toUpperCase() + ' LOGGED OUT');
-const auxChange = (userID, userName, auxTo) => console.log('[ ' + new Date().toLocaleString() + ' ] [ ' + userID + ' ] ' + userName.toUpperCase() + ' CHANGED STATUS TO ' + auxTo);
-const auxJump = (userID, userName, auxTo) => console.log('[ ' + new Date().toLocaleString() + ' ] [ ' + userID + ' ] ' + userName.toUpperCase() + ' POSSIBLE AUX JUMP ATTEMPT TO ' + auxTo); 
-const auxAlready = (userID, userName, auxTo) => console.log('[ ' + new Date().toLocaleString() + ' ] [ ' + userID + ' ] ' + userName.toUpperCase() + ' ALREADY IN AUX ' + auxTo); 
-weather.getTemperature(function(err, temp){ console.log('[INFO] OpenWeather API check - Return Value(TEMP): ' + ($weatherTemp = temp)); });
-weather.getDescription(function(err, desc){ console.log('[INFO] OpenWeather API check - Return Value(DETAILS): ' + ($weatherDetails = desc)); });
+const userSignin = (userID, userName) => console.log('[' + 'INFO'.blue + '] [ ' + new Date().toLocaleString() + ' ] [ ' + userID + ' ] ' + userName.toUpperCase() + ' LOGGED IN');
+const userSignout = (userID, userName) => console.log('[' + 'INFO'.blue + '] [ ' + new Date().toLocaleString() + ' ] [ ' + userID + ' ] ' + userName.toUpperCase() + ' LOGGED OUT');
+const auxChange = (userID, userName, auxTo) => console.log('[' + 'INFO'.blue + '] [ ' + new Date().toLocaleString() + ' ] [ ' + userID + ' ] ' + userName.toUpperCase() + ' CHANGED STATUS TO ' + auxTo);
+const auxJump = (userID, userName, auxTo) => console.log('[' + 'WRNG'.yellow + '] [ ' + new Date().toLocaleString() + ' ] [ ' + userID + ' ] ' + userName.toUpperCase() + ' POSSIBLE AUX JUMP ATTEMPT TO ' + auxTo); 
+const auxAlready = (userID, userName, auxTo) => console.log('[' + 'INFO'.blue + '] [ ' + new Date().toLocaleString() + ' ] [ ' + userID + ' ] ' + userName.toUpperCase() + ' ALREADY IN AUX ' + auxTo); 
+weather.getTemperature(function(err, temp){ console.log('[' + 'SUCC'.green + '] OpenWeather API check - Return Value(TEMP): ' + ($weatherTemp = temp)); });
+weather.getDescription(function(err, desc){ console.log('[' + 'SUCC'.green + '] OpenWeather API check - Return Value(DETAILS): ' + ($weatherDetails = desc)); });
 // ## Add revalidate for index $ if there's a changes on numerical value for the dashboard - function revalidate() //
 
 // << # End Points >>
-/*
 app.all('*', function(req, res, next) {
     let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress;
     console.log(ip)
@@ -139,7 +140,7 @@ app.all('*', function(req, res, next) {
             });
         }
     });
-})*/
+})
 
 app.get('/', (req, res) => {
     var session;
@@ -584,16 +585,8 @@ app.get('*', function(req, res){
 http.createServer(app).listen(process.env.SERVER_PORT, function (req, res) {
     console.clear();
     console.log('Zitra [Build ' + process.env.WEB_VERSION + '] (c) Harold Eustaquio. All rights reserved.');
-    console.log(`[INFO] ` + process.env.WEB_TITLE + ` is running on ` + ` and listening on Port ` + process.env.SERVER_PORT);
+    console.log(`[` + `INFO`.blue + `] ` + process.env.WEB_TITLE + ` is running on ` + ` and listening on Port ` + process.env.SERVER_PORT);
 });    
-
-/*
-http.createServer(app).listen(process.env.SERVER_PORT, function (req, res) {
-    console.clear();
-    console.log('Zitra [Build ' + process.env.WEB_VERSION + '] (c) Harold Eustaquio. All rights reserved.');
-    console.log(`[INFO] ` + process.env.WEB_TITLE + ` is Listening on Port ` + process.env.SERVER_PORT);
-});   
-*/
 
 // << # cron.js - task scheduler >> 
 eval(fs.readFileSync('cron.js')+'');

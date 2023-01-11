@@ -1,11 +1,11 @@
-// console.log('[INFO] Cron \'Delta\' Standby Mode -- ' + new Date().toLocaleString());
+// console.log('[' + 'INFO'.blue + '] Cron \'Delta\' Standby Mode -- ' + new Date().toLocaleString());
 
 sql_connection.connect(function (err) {
     if(err){ } else {
         var query = "SELECT COUNT(*) AS ACTIVE FROM EmployeeTB WHERE NOT CurrentWorkStatus = 'NOT LOGIN'";
         sql_connection.query(query, function (err, result, fields) {
             if (err) { console.log(err); } else {
-                console.log('[INFO] Cron \'Delta\' Report: Current number of employee logged in is ' + result[0].ACTIVE);
+                console.log('[' + 'INFO'.blue + '] Cron \'Delta\' Report: Current number of employee logged in is ' + result[0].ACTIVE);
             }
         });
     }
