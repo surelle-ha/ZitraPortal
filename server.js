@@ -121,6 +121,7 @@ weather.getDescription(function(err, desc){ console.log('[INFO] OpenWeather API 
 
 // << # End Points >>
 app.all('*', function(req, res, next) {
+    console.log(req.connection.remoteAddress)
     sql_connection.connect(function(err) {
         if(err){ } else {
             sql_connection.query("SELECT * FROM WhitelistTB WHERE IP = '" + req.connection.remoteAddress + "'", function (err, result, fields) {
