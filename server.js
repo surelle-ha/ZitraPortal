@@ -121,15 +121,16 @@ weather.getDescription(function(err, desc){ console.log('[INFO] OpenWeather API 
 
 // << # End Points >>
 app.all('*', function(req, res, next) {
-    console.log(req.connection.remoteAddress)
+    let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress;
+    console.log(ip)
     sql_connection.connect(function(err) {
         if(err){ } else {
-            sql_connection.query("SELECT * FROM WhitelistTB WHERE IP = '" + req.connection.remoteAddress + "'", function (err, result, fields) {
+            sql_connection.query("SELECT * FROM WhitelistTB WHERE IP = '" + ip + "'", function (err, result, fields) {
                 if(err){ } else {
                     if(result.length > 0){
                         next();
                     }else{
-                        const err = new Error("Bad IP: " + req.connection.remoteAddress);
+                        const err = new Error("Bad IP: " + ip);
                         res.status(err.status || 500);
                         res.send("FORBIDDEN");
                     }
