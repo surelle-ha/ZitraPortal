@@ -122,6 +122,7 @@ weather.getDescription(function(err, desc){ console.log('[' + 'SUCC'.green + '] 
 // ## Add revalidate for index $ if there's a changes on numerical value for the dashboard - function revalidate() //
 
 // << # End Points >>
+/* Whitelisting Feature - DB Table Name: WhitelistTB
 app.all('*', function(req, res, next) {
     let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress;
     console.log(ip)
@@ -141,6 +142,7 @@ app.all('*', function(req, res, next) {
         }
     });
 })
+*/
 
 app.get('/', (req, res) => {
     var session;
