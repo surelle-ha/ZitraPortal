@@ -76,19 +76,6 @@ const sessionConfig = {
     }
 }
 
-let validIps = ['::1', '127.0.0.1'];
-sql_connection.connect(function(err) {
-    if(err){ } else {
-        sql_connection.query("SELECT * FROM WhitelistTB", function (err, result, fields) {
-            if(err){ } else {
-                result.forEach(function(row){
-                    validIps.push(row.IP)
-                })
-            }
-        });
-    }
-});
-
 // << # Configure express module >>
 const app = express();
 app.set('view engine', 'ejs');
@@ -98,6 +85,7 @@ app.use(bodyParser.urlencoded({ extended:true}));
 app.use(cookieParser());
 app.set('trust proxy', true);
 app.use((req, res, next) => {
+    let validIps = ['::1', '127.0.0.1', '103.141.203.42'];
     if(validIps.includes(req.connection.remoteAddress)){
         next();
     }else{
