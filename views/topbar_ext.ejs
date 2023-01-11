@@ -165,6 +165,9 @@
 
         <div class="topbar-divider d-none d-sm-block"></div>
 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script> $.getJSON("https://api.ipify.org?format=json", function(data) { $("#puIP").html(data.ip); }) </script>
+
         <!-- Nav Item - User Information -->
         <li class="nav-item dropdown no-arrow">
             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
@@ -176,6 +179,9 @@
             <!-- Dropdown - User Information -->
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                 aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="">
+                    <div id="puIP"></div>
+                </a>
                 <a class="dropdown-item" href="/account">
                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                     Profile

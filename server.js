@@ -18,6 +18,7 @@ const weather = require('openweather-apis');
 const cron = require('node-cron');
 const { Configuration, OpenAIApi } = require("openai");
 const MemoryStore = require('memorystore')(sessions)
+const dns = require('dns');
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -82,6 +83,20 @@ app.use(express.static(__dirname + process.env.WEB_DEFAULT_PATH, {index: process
 app.use(sessions(sessionConfig));
 app.use(bodyParser.urlencoded({ extended:true}));
 app.use(cookieParser());
+app.set('trust proxy', true);
+app.use((req, res, next) => {
+    let validIps = ['::1', '127.0.0.1'];
+    if(validIps.includes(req.connection.remoteAddress)){
+        next();
+    }else{
+        const err = new Error("Bad IP: " + req.connection.remoteAddress);
+        next(err);
+    }
+})
+app.use((err, req, res, next) => {
+    res.status(err.status || 500);
+    res.send("FORBIDDEN");
+});
 
 // << # Test connection for SQL >>
 sql_connection.connect(function (err) {
@@ -126,7 +141,6 @@ app.get('/', (req, res) => {
 app.get('/signin', (req, res) => {
     var session;
     res.render('signin');
-    //res.redirect('/auth');
 });
 
 app.post('/auth-form', (req, res) => {
@@ -559,11 +573,10 @@ app.get('*', function(req, res){
 });
 
 // << ## MAIN >>
-
 http.createServer(app).listen(process.env.SERVER_PORT, function (req, res) {
     console.clear();
     console.log('Zitra [Build ' + process.env.WEB_VERSION + '] (c) Harold Eustaquio. All rights reserved.');
-    console.log(`[INFO] ` + process.env.WEB_TITLE + ` is Listening on Port ` + process.env.SERVER_PORT);
+    console.log(`[INFO] ` + process.env.WEB_TITLE + ` is running on ` + ` and listening on Port ` + process.env.SERVER_PORT);
 });    
 
 /*
