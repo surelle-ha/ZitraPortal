@@ -84,19 +84,6 @@ app.use(sessions(sessionConfig));
 app.use(bodyParser.urlencoded({ extended:true}));
 app.use(cookieParser());
 app.set('trust proxy', true);
-app.use((req, res, next) => {
-    let validIps = ['::1', '127.0.0.1', '103.141.203.42'];
-    if(validIps.includes(req.connection.remoteAddress)){
-        next();
-    }else{
-        const err = new Error("Bad IP: " + req.connection.remoteAddress);
-        next(err);
-    }
-})
-app.use((err, req, res, next) => {
-    res.status(err.status || 500);
-    res.send("FORBIDDEN");
-});
 
 // << # Test connection for SQL >>
 sql_connection.connect(function (err) {
@@ -133,6 +120,29 @@ weather.getDescription(function(err, desc){ console.log('[INFO] OpenWeather API 
 // ## Add revalidate for index $ if there's a changes on numerical value for the dashboard - function revalidate() //
 
 // << # End Points >>
+
+/* ADD WHITELIST SYSTEM
+app.all('*', (req, res, next) => {
+    sql_connection.connect(function(err) {
+        if(err){ } else {
+            sql_connection.query("SELECT * FROM WhitelistTB", function (err, result, fields) {
+                if(err){ } else {
+                    result.forEach(function(row){
+                        if(row.IP = req.connection.remoteAddress){
+                            next()
+                        }else{
+                            const err = new Error("Bad IP: " + req.connection.remoteAddress);
+                            res.status(err.status || 500);
+                            res.send("FORBIDDEN");
+                        }
+                    })
+                }
+            });
+        }
+    });
+})
+*/
+
 app.get('/', (req, res) => {
     var session;
     res.redirect('/signin');
