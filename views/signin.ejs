@@ -8,8 +8,22 @@
     <title>Signin</title>
 </head>
 <body>
-    <main class="main">
-        <div class="container">
+    <script>
+        window.onload = function() {
+            Particles.init({
+                selector: '.particle',
+                maxParticles: 250,
+                connectParticles: true,
+                responsive: true,
+                color: '#101010',
+                minDistance: 100,
+                sizeVariations: 4
+            });
+        };
+    </script>
+    <div class="main">
+        <!-- <canvas class="particle"></canvas> -->
+        <div class="container" >
             <section class="wrapper">
                 <div class="heading">
                     <h1 class="text text-large">Sign In</h1>
@@ -59,6 +73,7 @@
                 </div>
             </section>
         </div>
-    </main>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particlesjs/2.2.3/particles.min.js"></script>
 </body>
 </html>

@@ -171,9 +171,13 @@ app.post('/auth-form', (req, res) => {
                                 req.session.statuslastchange = result[0].WorkStatusChangedTime;
                             }
                             req.session.username = result[0].FirstName + ' ' + result[0].LastName; 
+                            req.session.email = result[0].Email;
+                            req.session.password = result[0].Password;
                             req.session.userid = result[0].ID;
                             req.session.department = result[0].Department;
                             req.session.position = result[0].Role;
+                            req.session.notes = result[0].Notes;
+                            req.session.photo = result[0].Photo;
                             req.session.worksetup = result[0].CurrentWorkSetup;
                             req.session.manager = result[0].ReportsTo;
                             userSignin(req.session.userid, req.session.username);
@@ -262,7 +266,12 @@ app.get('/account', function(req, res) {
                 webAuthor: process.env.WEB_AUTHOR, 
                 status: req.session.status, 
                 statuslastchange: req.session.statuslastchange,
+                id: req.session.userid,
                 username: req.session.username,
+                email: req.session.email,
+                password: req.session.password,
+                notes: req.session.notes,
+                photo: req.session.photo,
                 department: req.session.department,
                 position: req.session.position,
                 worksetup: req.session.worksetup

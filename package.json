@@ -24,7 +24,9 @@
     "speed-test": "^3.0.0"
   },
   "scripts": {
-    "dev": "pm2 start server.js && pm2 monit",
+    "prod": "node server.js",
+    "dev": "pm2 start server.js",
+    "monitor": "pm2 monit",
     "kill": "pm2 stop 0"
   }
 }
