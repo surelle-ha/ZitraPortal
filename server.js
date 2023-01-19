@@ -55,13 +55,6 @@ var sql_connection = mysql.createConnection({
     password: process.env.SQL_PASS
 });
 
-// << # Keep MySQL Connection Alive >>
-try{
-    setInterval(function () {
-        sql_connection.query('SELECT 1');
-    }, 5000);
-}catch(err){}
-
 // << # Configuration for express-session >>
 const oneDay = 1000 * 60 * 60 * 24;
 const sessionConfig = {
@@ -78,6 +71,12 @@ const sessionConfig = {
     }
 }
 
+// << # Test connection for SQL >>
+sql_connection.connect(function (err) {
+    if(err){ console.log('[' + 'CRTL'.red + '] SQL Status: ' + err);
+    }else{ console.log('[' + 'SUCC'.green + '] SQL Status: Connected'); }
+});
+
 // << # Configure express module >>
 const app = express();
 app.set('view engine', 'ejs');
@@ -87,10 +86,11 @@ app.use(bodyParser.urlencoded({ extended:true}));
 app.use(cookieParser());
 app.set('trust proxy', true);
 
-// << # Test connection for SQL >>
-sql_connection.connect(function (err) {
-    if(err){ console.log('[' + 'CRTL'.red + '] SQL Status: ' + err);
-    }else{ console.log('[' + 'SUCC'.green + '] SQL Status: Connected'); }
+// << ## MAIN >>
+http.createServer(app).listen(process.env.SERVER_PORT, function (req, res) {
+    console.clear();
+    console.log('Zitra [Build ' + process.env.WEB_VERSION + '] (c) Harold Eustaquio. All rights reserved.');
+    console.log(`[` + `INFO`.blue + `] ` + process.env.WEB_TITLE + ` is running on ` + ` and listening on Port ` + process.env.SERVER_PORT);
 });
 
 // << # Define Keyword >>
@@ -249,7 +249,6 @@ app.get('/index', (req, res) => {
             });
         }
     } catch (e) {
-        //if (e instanceof ReferenceError) { res.redirect('/'); }
         res.redirect('/');
     }
 });
@@ -278,7 +277,18 @@ app.get('/account', function(req, res) {
             });
         }
     } catch (e) {
-        //if (e instanceof ReferenceError) { res.redirect('/'); }
+        res.redirect('/');
+    }
+});
+
+app.post('/account/changepassword', function(req, res) { // NOT WORKING PASSWORD
+    try{
+         if(req.session.password == req.body.curpassword) {
+            res.redirect('/account?ret=1')
+         } else {
+            res.redirect('/account?ret=0')
+         }
+    } catch (e) {
         res.redirect('/');
     }
 });
@@ -311,7 +321,6 @@ app.get('/team', function(req,res) {
             });
         }
     } catch (e) {
-        //if (e instanceof ReferenceError) { res.redirect('/'); }
         res.redirect('/');
     }
 });
@@ -344,7 +353,6 @@ app.get('/timetrack', function(req, res) {
             });
         }
     } catch (e) {
-        //if (e instanceof ReferenceError) { res.redirect('/'); }
         res.redirect('/');
     }
 });
@@ -377,7 +385,6 @@ app.get('/switch', function(req, res) { // For admin only
             });
         }
     } catch (e) {
-        //if (e instanceof ReferenceError) { res.redirect('/'); }
         res.redirect('/');
     }
 });
@@ -399,7 +406,6 @@ app.get('/start-maintenance', function(req, res) { // For admin only
             });
         }
     } catch (e) {
-        //if (e instanceof ReferenceError) { res.redirect('/'); }
         res.redirect('/');
     }
 });
@@ -421,7 +427,6 @@ app.get('/stop-maintenance', function(req, res) { // For admin only
             });
         }
     } catch (e) {
-        //if (e instanceof ReferenceError) { res.redirect('/'); }
         res.redirect('/');
     }
 });
@@ -443,7 +448,6 @@ app.get('/hide-score', function(req, res) {
             });
         }
     } catch (e) {
-        //if (e instanceof ReferenceError) { res.redirect('/'); }
         res.redirect('/');
     }
 });
@@ -465,7 +469,6 @@ app.get('/show-score', function(req, res) {
             });
         }
     } catch (e) {
-        //if (e instanceof ReferenceError) { res.redirect('/'); }
         res.redirect('/');
     }
 });
@@ -497,7 +500,6 @@ app.get('/user-manager', function(req, res){
             });
         }
     } catch (e) {
-        //if (e instanceof ReferenceError) { res.redirect('/'); }
         res.redirect('/');
     }
 });
@@ -533,7 +535,6 @@ app.get('/aihelp', function(req, res) {
             });
         }
     } catch (e) {
-        //if (e instanceof ReferenceError) { res.redirect('/'); }
         console.log(e);
         res.redirect('/');
     }
@@ -557,7 +558,6 @@ app.get('/dbmyadmin', function(req, res) {
             });
         }
     } catch (e) {
-        //if (e instanceof ReferenceError) { res.redirect('/'); }
         res.redirect('/');
     }
 });
@@ -569,7 +569,207 @@ app.get('/signout', function(req, res) {
 });
 
 // << # userStatus.js - functions when changing user state >> 
-eval(fs.readFileSync('userStatus.js')+'');
+console.log('[INFO] userStatus.js Linked');
+
+app.get('/avail', function(req, res) {
+    try {
+        sql_connection.connect(function (err) {
+            var query = "UPDATE EmployeeTB SET WorkStatusChangedTime = '" + new Date().toLocaleString() + "' WHERE ID = " + req.session.userid;
+            sql_connection.query(query, function (err, result){});
+        });
+        req.session.status = userWorkStatus.AVAIL;
+        var query = "UPDATE EmployeeTB SET CurrentWorkStatus = '" + req.session.status + "' WHERE ID = " + req.session.userid;
+        sql_connection.query(query, function (err, result){});
+        var query = "INSERT INTO WorkTrackTB(User_ID, EvDate, EvTime, EvStatus) VALUES(" + req.session.userid + ", '" + new Date().toLocaleDateString() + "', '" + new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) + "', '" + req.session.status + "')";
+        sql_connection.query(query, function (err, result){});
+        auxChange(req.session.userid, req.session.username, req.session.status);
+        res.redirect('/index');
+    } catch (e) {
+        if (e instanceof ReferenceError) { res.redirect('/'); }
+    }
+});
+
+app.get('/meeting', function(req, res) {
+    try {
+        if(req.session.status == userWorkStatus.AVAIL) { 
+            sql_connection.connect(function (err) {
+                var query = "UPDATE EmployeeTB SET WorkStatusChangedTime = '" + new Date().toLocaleString() + "' WHERE ID = " + req.session.userid;
+                sql_connection.query(query, function (err, result){});
+            });
+            req.session.status = userWorkStatus.MEETING; 
+            var query = "UPDATE EmployeeTB SET CurrentWorkStatus = '" + req.session.status + "' WHERE ID = " + req.session.userid;
+            sql_connection.query(query, function (err, result){});
+            var query = "INSERT INTO WorkTrackTB(User_ID, EvDate, EvTime, EvStatus) VALUES(" + req.session.userid + ", '" + new Date().toLocaleDateString() + "', '" + new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) + "', '" + req.session.status + "')";
+        sql_connection.query(query, function (err, result){});
+            auxChange(req.session.userid, req.session.username, req.session.status);
+            res.redirect('/index');
+        } else if(req.session.status == userWorkStatus.MEETING){ 
+            auxAlready(req.session.userid, req.session.username, userWorkStatus.MEETING);
+            res.redirect('/index');
+        } else {
+            auxJump(req.session.userid, req.session.username, userWorkStatus.MEETING);
+            res.redirect('/index');
+        }
+    } catch (e) {
+        if (e instanceof ReferenceError) { res.redirect('/'); }
+    }
+});
+
+app.get('/training', function(req, res) {
+    try {
+        if(req.session.status == userWorkStatus.AVAIL) { 
+            sql_connection.connect(function (err) {
+                var query = "UPDATE EmployeeTB SET WorkStatusChangedTime = '" + new Date().toLocaleString() + "' WHERE ID = " + req.session.userid;
+                sql_connection.query(query, function (err, result){});
+            });
+            req.session.status = userWorkStatus.TRAINING; 
+            var query = "UPDATE EmployeeTB SET CurrentWorkStatus = '" + req.session.status + "' WHERE ID = " + req.session.userid;
+            sql_connection.query(query, function (err, result){});
+            var query = "INSERT INTO WorkTrackTB(User_ID, EvDate, EvTime, EvStatus) VALUES(" + req.session.userid + ", '" + new Date().toLocaleDateString() + "', '" + new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) + "', '" + req.session.status + "')";
+            sql_connection.query(query, function (err, result){});
+            auxChange(req.session.userid, req.session.username, req.session.status);
+            res.redirect('/index');
+        } else if(req.session.status == userWorkStatus.TRAINING){ 
+            auxAlready(req.session.userid, req.session.username, userWorkStatus.TRAINING);
+            res.redirect('/index');
+        } else {
+            auxJump(req.session.userid, req.session.username, userWorkStatus.TRAINING);
+            res.redirect('/index');
+        }
+    } catch (e) {
+        if (e instanceof ReferenceError) { res.redirect('/'); }
+    }
+});
+
+app.get('/coaching', function(req, res) {
+    try {
+        if(req.session.status == userWorkStatus.AVAIL) { 
+            sql_connection.connect(function (err) {
+                var query = "UPDATE EmployeeTB SET WorkStatusChangedTime = '" + new Date().toLocaleString() + "' WHERE ID = " + req.session.userid;
+                sql_connection.query(query, function (err, result){});
+            });
+            req.session.status = userWorkStatus.COACHING; 
+            var query = "UPDATE EmployeeTB SET CurrentWorkStatus = '" + req.session.status + "' WHERE ID = " + req.session.userid;
+            sql_connection.query(query, function (err, result){});
+            var query = "INSERT INTO WorkTrackTB(User_ID, EvDate, EvTime, EvStatus) VALUES(" + req.session.userid + ", '" + new Date().toLocaleDateString() + "', '" + new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) + "', '" + req.session.status + "')";
+            sql_connection.query(query, function (err, result){});
+            auxChange(req.session.userid, req.session.username, req.session.status);
+            res.redirect('/index');
+        } else if(req.session.status == userWorkStatus.COACHING){ 
+            auxAlready(req.session.userid, req.session.username, userWorkStatus.COACHING);
+            res.redirect('/index');
+        } else {
+            auxJump(req.session.userid, req.session.username, userWorkStatus.COACHING);
+            res.redirect('/index');
+        }
+    } catch (e) {
+        if (e instanceof ReferenceError) { res.redirect('/'); }
+    }
+});
+
+app.get('/other', function(req, res) {
+    try {
+        if(req.session.status == userWorkStatus.AVAIL) { 
+            sql_connection.connect(function (err) {
+                var query = "UPDATE EmployeeTB SET WorkStatusChangedTime = '" + new Date().toLocaleString() + "' WHERE ID = " + req.session.userid;
+                sql_connection.query(query, function (err, result){});
+            });
+            req.session.status = userWorkStatus.OTHER; 
+            var query = "UPDATE EmployeeTB SET CurrentWorkStatus = '" + req.session.status + "' WHERE ID = " + req.session.userid;
+            sql_connection.query(query, function (err, result){});
+            var query = "INSERT INTO WorkTrackTB(User_ID, EvDate, EvTime, EvStatus) VALUES(" + req.session.userid + ", '" + new Date().toLocaleDateString() + "', '" + new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) + "', '" + req.session.status + "')";
+            sql_connection.query(query, function (err, result){});
+            auxChange(req.session.userid, req.session.username, req.session.status);
+            res.redirect('/index');
+        } else if(req.session.status == userWorkStatus.OTHER){ 
+            auxAlready(req.session.userid, req.session.username, userWorkStatus.OTHER);
+            res.redirect('/index');
+        } else {
+            auxJump(req.session.userid, req.session.username, userWorkStatus.OTHER);
+            res.redirect('/index');
+        }
+    } catch (e) {
+        if (e instanceof ReferenceError) { res.redirect('/'); }
+    }
+});
+
+app.get('/break', function(req, res) {
+    try {
+        if(req.session.status == userWorkStatus.AVAIL) { 
+            sql_connection.connect(function (err) {
+                var query = "UPDATE EmployeeTB SET WorkStatusChangedTime = '" + new Date().toLocaleString() + "' WHERE ID = " + req.session.userid;
+                sql_connection.query(query, function (err, result){});
+            });
+            req.session.status = userWorkStatus.BREAK; 
+            var query = "UPDATE EmployeeTB SET CurrentWorkStatus = '" + req.session.status + "' WHERE ID = " + req.session.userid;
+            sql_connection.query(query, function (err, result){});
+            var query = "INSERT INTO WorkTrackTB(User_ID, EvDate, EvTime, EvStatus) VALUES(" + req.session.userid + ", '" + new Date().toLocaleDateString() + "', '" + new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) + "', '" + req.session.status + "')";
+            sql_connection.query(query, function (err, result){});
+            auxChange(req.session.userid, req.session.username, req.session.status);
+            res.redirect('/index');
+        } else if(req.session.status == userWorkStatus.BREAK){ 
+            auxAlready(req.session.userid, req.session.username, userWorkStatus.BREAK);
+            res.redirect('/index');
+        } else {
+            auxJump(req.session.userid, req.session.username, userWorkStatus.BREAK);
+            res.redirect('/index');
+        }
+    } catch (e) {
+        if (e instanceof ReferenceError) { res.redirect('/'); }
+    }
+});
+
+app.get('/lunch', function(req, res) {
+    try {
+        if(req.session.status == userWorkStatus.AVAIL) { 
+            sql_connection.connect(function (err) {
+                var query = "UPDATE EmployeeTB SET WorkStatusChangedTime = '" + new Date().toLocaleString() + "' WHERE ID = " + req.session.userid;
+                sql_connection.query(query, function (err, result){});
+            });
+            req.session.status = userWorkStatus.LUNCH; 
+            var query = "UPDATE EmployeeTB SET CurrentWorkStatus = '" + req.session.status + "' WHERE ID = " + req.session.userid;
+            sql_connection.query(query, function (err, result){});
+            var query = "INSERT INTO WorkTrackTB(User_ID, EvDate, EvTime, EvStatus) VALUES(" + req.session.userid + ", '" + new Date().toLocaleDateString() + "', '" + new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) + "', '" + req.session.status + "')";
+            sql_connection.query(query, function (err, result){});
+            auxChange(req.session.userid, req.session.username, req.session.status);
+            res.redirect('/index');
+        } else if(req.session.status == userWorkStatus.LUNCH){ 
+            auxAlready(req.session.userid, req.session.username, userWorkStatus.LUNCH);
+            res.redirect('/index');
+        } else {
+            auxJump(req.session.userid, req.session.username, userWorkStatus.LUNCH);
+            res.redirect('/index');
+        }
+    } catch (e) {
+        if (e instanceof ReferenceError) { res.redirect('/'); }
+    }
+});
+
+app.get('/logout', function(req, res) {
+    try {
+        if(req.session.status == userWorkStatus.AVAIL) { 
+            sql_connection.connect(function (err) {
+                var query = "UPDATE EmployeeTB SET WorkStatusChangedTime = '" + new Date().toLocaleString() + "' WHERE ID = " + req.session.userid;
+                sql_connection.query(query, function (err, result){});
+            });
+            req.session.status = userWorkStatus.NOT_LOGIN; 
+            var query = "UPDATE EmployeeTB SET CurrentWorkStatus = '" + req.session.status + "' WHERE ID = " + req.session.userid;
+            sql_connection.query(query, function (err, result){});
+            var query = "INSERT INTO WorkTrackTB(User_ID, EvDate, EvTime, EvStatus) VALUES(" + req.session.userid + ", '" + new Date().toLocaleDateString() + "', '" + new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) + "', '" + req.session.status + "')";
+            sql_connection.query(query, function (err, result){});
+            auxChange(req.session.userid, req.session.username, req.session.status);
+            res.redirect('/index');
+        } else if(req.session.status == userWorkStatus.NOT_LOGIN){ 
+            auxAlready(req.session.userid, req.session.username, userWorkStatus.NOT_LOGIN);
+            res.redirect('/index');
+        } else {
+            auxJump(req.session.userid, req.session.username, userWorkStatus.NOT_LOGIN);
+            res.redirect('/index');
+        }
+    } catch (e) {
+        if (e instanceof ReferenceError) { res.redirect('/'); }
+    }
+});
 
 app.get('*', function(req, res){
     try {
@@ -587,17 +787,12 @@ app.get('*', function(req, res){
             });
         }
     } catch (e) {
-        //if (e instanceof ReferenceError) { res.redirect('/'); }
         res.redirect('/');
     }
-});
-
-// << ## MAIN >>
-http.createServer(app).listen(process.env.SERVER_PORT, function (req, res) {
-    console.clear();
-    console.log('Zitra [Build ' + process.env.WEB_VERSION + '] (c) Harold Eustaquio. All rights reserved.');
-    console.log(`[` + `INFO`.blue + `] ` + process.env.WEB_TITLE + ` is running on ` + ` and listening on Port ` + process.env.SERVER_PORT);
 });    
 
-// << # cron.js - task scheduler >> 
-eval(fs.readFileSync('cron.js')+'');
+// << # svc.cron.js - task scheduler >> 
+eval(fs.readFileSync('service/svc.cron.js')+'');
+
+// << # svc.dbalive.js - keep db alive if provider is asshole >> 
+eval(fs.readFileSync('service/svc.dbalive.js')+'');

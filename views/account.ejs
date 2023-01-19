@@ -19,7 +19,7 @@
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
-
+    
 </head>
 
 <body id="page-top" onload="getWorkingTime();">
@@ -141,7 +141,10 @@
                                                                 <button class="btn btn-primary" type="submit">Update Changes [UD]</button>
                                                             </div>
                                                         </div>
-                                                        <br>
+                                                        
+                                                    </form>
+                                                   <br>
+                                                    <form id='changepassword' action="/account/changepassword" method="POST">
                                                        <div class="row">
                                                           <div class="col-12 col-sm-6 mb-3">
                                                              <div class="mb-2"><b>Change Password</b></div>
@@ -149,7 +152,7 @@
                                                                 <div class="col">
                                                                    <div class="form-group">
                                                                       <label>Current Password</label>
-                                                                      <input class="form-control" type="password" placeholder="••••••">
+                                                                      <input class="form-control" name="curpassword" type="password" placeholder="••••••">
                                                                    </div>
                                                                 </div>
                                                              </div>
@@ -157,7 +160,7 @@
                                                                 <div class="col">
                                                                    <div class="form-group">
                                                                       <label>New Password</label>
-                                                                      <input class="form-control" type="password" placeholder="••••••">
+                                                                      <input class="form-control" name="password" type="password" placeholder="••••••">
                                                                    </div>
                                                                 </div>
                                                              </div>
@@ -165,7 +168,7 @@
                                                                 <div class="col">
                                                                    <div class="form-group">
                                                                       <label>Confirm <span class="d-none d-xl-inline">Password</span></label>
-                                                                      <input class="form-control" type="password" placeholder="••••••">
+                                                                      <input class="form-control" name="repassword" type="password" placeholder="••••••">
                                                                    </div>
                                                                 </div>
                                                              </div>
@@ -195,7 +198,7 @@
                                                        </div>
                                                        <div class="row">
                                                           <div class="col d-flex justify-content-end">
-                                                             <button class="btn btn-primary" type="submit">Save Password [UD]</button>
+                                                             <button form="changepassword" class="btn btn-primary" type="submit">Save Password [UD]</button>
                                                           </div>
                                                        </div>
                                                     </form>
@@ -257,6 +260,26 @@
 
     <!-- Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="/signout">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Password Error Modal-->
+    <div class="modal fade" id="cpeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
