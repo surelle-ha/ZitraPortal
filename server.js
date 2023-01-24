@@ -171,6 +171,8 @@ app.post('/auth-form', (req, res) => {
                                 req.session.statuslastchange = result[0].WorkStatusChangedTime;
                             }
                             req.session.username = result[0].FirstName + ' ' + result[0].LastName; 
+                            req.session.fname = result[0].FirstName; 
+                            req.session.lname = result[0].LastName; 
                             req.session.email = result[0].Email;
                             req.session.password = result[0].Password;
                             req.session.userid = result[0].ID;
@@ -188,18 +190,6 @@ app.post('/auth-form', (req, res) => {
             });
         }
     });
-});
-
-app.get('/auth-ms', (req, res) => {
-    session = req.session;
-    if(req.session.status === null){ req.session.status = userWorkStatus.NOT_LOGIN; }
-    req.session.username = 'Harold Eustaquio'; // Test Name Variable
-    req.session.userid = 91000; // Test ID Variable
-    req.session.department = 'Zitra Test Inc.';
-    req.session.position = 'Developer';
-    req.session.worksetup = 'Work From Office';
-    userSignin(req.session.userid, req.session.username);
-    res.redirect('/index');
 });
 
 app.get('/forgot-password', function(req, res) {
@@ -267,6 +257,38 @@ app.get('/account', function(req, res) {
                 statuslastchange: req.session.statuslastchange,
                 id: req.session.userid,
                 username: req.session.username,
+                fname: req.session.fname,
+                lname: req.session.lname,
+                email: req.session.email,
+                password: req.session.password,
+                notes: req.session.notes,
+                photo: req.session.photo,
+                department: req.session.department,
+                position: req.session.position,
+                worksetup: req.session.worksetup
+            });
+        }
+    } catch (e) {
+        res.redirect('/');
+    }
+});
+
+app.get('/security', function(req, res) {
+    try {
+        if(req.session.username == null){
+            res.redirect('/');
+        }else{
+            res.render('security', { 
+                locWeather: $weatherTemp,
+                locWeatherLong: $weatherDetails,
+                webTitle: process.env.WEB_TITLE, 
+                webAuthor: process.env.WEB_AUTHOR, 
+                status: req.session.status, 
+                statuslastchange: req.session.statuslastchange,
+                id: req.session.userid,
+                username: req.session.username,
+                fname: req.session.fname,
+                lname: req.session.lname,
                 email: req.session.email,
                 password: req.session.password,
                 notes: req.session.notes,
@@ -283,11 +305,24 @@ app.get('/account', function(req, res) {
 
 app.post('/account/changepassword', function(req, res) { // NOT WORKING PASSWORD
     try{
-         if(req.session.password == req.body.curpassword) {
-            res.redirect('/account?ret=1')
-         } else {
-            res.redirect('/account?ret=0')
-         }
+        if(req.body.password == req.body.repassword) {
+            if(req.session.password == req.body.curpassword) {
+                sql_connection.connect(function (err) {
+                    if(err){ } else {
+                        var query = "UPDATE EmployeeTB SET Password = '" + req.body.password + "' WHERE ID = '" + req.session.userid + "'";
+                        sql_connection.query(query, function (err, result, fields) {
+                            if (err) { console.log(err); } else {
+                                res.redirect('/security?cpsuccess');
+                            }
+                        });
+                    }
+                });
+             } else {
+                res.redirect('/security?invalidpass')
+             }
+        } else {
+            res.redirect('/security?notmatch')
+        }
     } catch (e) {
         res.redirect('/');
     }
