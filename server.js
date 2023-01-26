@@ -19,6 +19,8 @@ const cron = require('node-cron');
 const { Configuration, OpenAIApi } = require("openai");
 const MemoryStore = require('memorystore')(sessions)
 const colors = require('colors');
+const path = require("path")
+const multer = require("multer")
 
 /*
 const configuration = new Configuration({
@@ -215,6 +217,7 @@ app.get('/index', (req, res) => {
                         if (err) { console.log(err); } else {
                             if(result[0].status != 0 || req.session.position == 'Developer'){
                                 res.render('index', { 
+                                    id: req.session.userid,
                                     locWeather: $weatherTemp,
                                     locWeatherLong: $weatherDetails,
                                     webTitle: process.env.WEB_TITLE, 
@@ -303,7 +306,50 @@ app.get('/security', function(req, res) {
     }
 });
 
-app.post('/account/changepassword', function(req, res) { // NOT WORKING PASSWORD
+app.post('/account/changedisplay', function(req, res, next){
+    var storage = multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, "views/u/" + req.session.userid)
+        },
+        filename: function (req, file, cb) {
+            cb(null, "DP-" + req.session.userid+".png")
+        }
+    })
+    const maxSize = 1 * 10000 * 10000;
+    var upload = multer({ 
+        storage: storage,
+        limits: { fileSize: maxSize },
+        fileFilter: function (req, file, cb){
+        
+            // Set the filetypes, it is optional
+            var filetypes = /jpeg|jpg|png/;
+            var mimetype = filetypes.test(file.mimetype);
+      
+            var extname = filetypes.test(path.extname(
+                        file.originalname).toLowerCase());
+            
+            if (mimetype && extname) {
+                return cb(null, true);
+            }
+          
+            cb("Error: File upload only supports the "
+                    + "following filetypes - " + filetypes);
+          } 
+    }).single("dp_path");
+    upload(req,res,function(err) {
+        if(err) {
+            // ERROR occurred (here it can be occurred due
+            // to uploading image of size greater than
+            // 1MB or uploading different file type)
+            res.send(err)
+        } else {
+            // SUCCESS, image successfully uploaded
+            res.send("Success, Image uploaded!")
+        }
+    })
+});
+
+app.post('/account/changepassword', function(req, res) { 
     try{
         if(req.body.password == req.body.repassword) {
             if(req.session.password == req.body.curpassword) {
@@ -345,6 +391,7 @@ app.get('/team', function(req,res) {
                                 webAuthor: process.env.WEB_AUTHOR, 
                                 status: req.session.status, 
                                 statuslastchange: req.session.statuslastchange,
+                                id: req.session.userid,
                                 username: req.session.username,
                                 position: req.session.position,
                                 manager: req.session.manager,
@@ -377,6 +424,7 @@ app.get('/timetrack', function(req, res) {
                                 webAuthor: process.env.WEB_AUTHOR, 
                                 status: req.session.status, 
                                 statuslastchange: req.session.statuslastchange,
+                                id: req.session.userid,
                                 username: req.session.username,
                                 position: req.session.position,
                                 manager: req.session.manager,
@@ -409,6 +457,7 @@ app.get('/switch', function(req, res) { // For admin only
                                 webAuthor: process.env.WEB_AUTHOR, 
                                 status: req.session.status, 
                                 statuslastchange: req.session.statuslastchange,
+                                id: req.session.userid,
                                 username: req.session.username,
                                 position: req.session.position,
                                 switch_server: result[0].status,
@@ -525,6 +574,7 @@ app.get('/user-manager', function(req, res){
                                 webAuthor: process.env.WEB_AUTHOR, 
                                 status: req.session.status, 
                                 statuslastchange: req.session.statuslastchange,
+                                id: req.session.userid,
                                 username: req.session.username,
                                 position: req.session.position,
                                 all_user: result
@@ -561,6 +611,7 @@ app.get('/aihelp', function(req, res) {
                                 webAuthor: process.env.WEB_AUTHOR, 
                                 status: req.session.status, 
                                 statuslastchange: req.session.statuslastchange,
+                                    id: req.session.userid,
                                 username: req.session.username,
                                 position: req.session.position
                             });
@@ -588,6 +639,7 @@ app.get('/dbmyadmin', function(req, res) {
                 webAuthor: process.env.WEB_AUTHOR, 
                 status: req.session.status, 
                 statuslastchange: req.session.statuslastchange,
+                id: req.session.userid,
                 username: req.session.username,
                 position: req.session.position
             });
@@ -816,6 +868,7 @@ app.get('*', function(req, res){
                 webAuthor: process.env.WEB_AUTHOR, 
                 status: req.session.status, 
                 statuslastchange: req.session.statuslastchange,
+                id: req.session.userid,
                 username: req.session.username,
                 department: req.session.department,
                 position: req.session.position

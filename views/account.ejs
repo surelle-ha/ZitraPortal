@@ -68,10 +68,14 @@
                                            <div class="e-profile">
                                               <div class="row">
                                                  <div class="col-12 col-sm-auto mb-3">
+                                                   <form class="form" action="/account/changedisplay" method="POST" enctype="multipart/form-data">
                                                     <div class="mx-auto" style="width: 140px;">
-                                                       <div class="d-flex justify-content-center align-items-center rounded" style="height: 140px; background-color: rgb(233, 236, 239);">
-                                                            <span style="color: rgb(166, 168, 170); font: bold 8pt Arial;">140x140</span>
-                                                       </div>
+                                                      <input type="file" accept="image/png, image/jpeg" name="dp_path" id="actual-btn" hidden required>   
+                                                       <label for="actual-btn" class="d-flex justify-content-center align-items-center rounded" style="height: 140px; background-color: rgb(233, 236, 239);">
+                                                         <span style="color: rgb(166, 168, 170); font: bold 8pt Arial;">
+                                                            <img style="height: 144px; width: 144px;" src="u/<%= id %>/DP-<%= id %>.png">
+                                                         </span>
+                                                       </label>
                                                     </div>
                                                  </div>
                                                  <div class="col d-flex flex-column flex-sm-row justify-content-between mb-3">
@@ -84,9 +88,9 @@
                                                             <div class="text-muted"><b style="color: rgb(46, 184, 46);">• </b><small>Online</small></div>
                                                         <% } %>
                                                        <div class="mt-2">
-                                                          <button class="btn btn-primary" type="button">
-                                                          <i class="fa fa-fw fa-camera"></i>
-                                                          <span>Change Photo [UD]</span>
+                                                          <button class="btn btn-primary" type="submit">
+                                                            <i class="fa fa-fw fa-camera" ></i>
+                                                            <span>Change Photo</span>
                                                           </button>
                                                        </div>
                                                     </div>
@@ -102,46 +106,45 @@
                                               </ul>
                                               <div class="tab-content pt-3">
                                                  <div class="tab-pane active">
-                                                    <form class="form" novalidate="">
-                                                       <div class="row">
-                                                          <div class="col">
-                                                             <div class="row">
-                                                                <div class="col">
-                                                                   <div class="form-group">
-                                                                      <label>First Name</label>
-                                                                      <input class="form-control" type="text" name="name" placeholder="John Smith" value="<%- fname %>" disabled>
-                                                                   </div>
-                                                                </div>
-                                                                <div class="col">
-                                                                   <div class="form-group">
-                                                                      <label>Last Name</label>
-                                                                      <input class="form-control" type="text" name="username" placeholder="<%- lname %>" disabled>
-                                                                   </div>
-                                                                </div>
-                                                             </div>
-                                                             <div class="row">
-                                                                <div class="col">
-                                                                   <div class="form-group">
-                                                                      <label>Email</label>
-                                                                      <input class="form-control" type="email" placeholder="user@example.com" value="<%- email %>" disabled>
-                                                                   </div>
-                                                                </div>
-                                                             </div>
-                                                             <div class="row">
-                                                                <div class="col mb-3">
-                                                                   <div class="form-group">
-                                                                      <label>About</label>
-                                                                      <textarea class="form-control" rows="5" placeholder="My Bio"><%- notes %></textarea>
-                                                                   </div>
-                                                                </div>
-                                                             </div>
-                                                          </div>
-                                                       </div>
-                                                       <div class="row">
-                                                            <div class="col d-flex">
-                                                                <button class="btn btn-primary" type="submit">Update Changes [UD]</button>
+                                                      <div class="row">
+                                                         <div class="col">
+                                                            <div class="row">
+                                                               <div class="col">
+                                                                  <div class="form-group">
+                                                                     <label>First Name</label>
+                                                                     <input class="form-control" type="text" name="name" placeholder="John Smith" value="<%- fname %>" disabled>
+                                                                  </div>
+                                                               </div>
+                                                               <div class="col">
+                                                                  <div class="form-group">
+                                                                     <label>Last Name</label>
+                                                                     <input class="form-control" type="text" name="username" placeholder="<%- lname %>" disabled>
+                                                                  </div>
+                                                               </div>
                                                             </div>
-                                                        </div>
+                                                            <div class="row">
+                                                               <div class="col">
+                                                                  <div class="form-group">
+                                                                     <label>Email</label>
+                                                                     <input class="form-control" type="email" placeholder="user@example.com" value="<%- email %>" disabled>
+                                                                  </div>
+                                                               </div>
+                                                            </div>
+                                                            <div class="row">
+                                                               <div class="col mb-3">
+                                                                  <div class="form-group">
+                                                                     <label>About</label>
+                                                                     <textarea class="form-control" rows="5" placeholder="My Bio"><%- notes %></textarea>
+                                                                  </div>
+                                                               </div>
+                                                            </div>
+                                                         </div>
+                                                      </div>
+                                                      <div class="row">
+                                                         <div class="col d-flex">
+                                                               <button class="btn btn-primary" type="submit">Update Changes [UD]</button>
+                                                         </div>
+                                                      </div>
                                                     </form>
                                                  </div>
                                               </div>
